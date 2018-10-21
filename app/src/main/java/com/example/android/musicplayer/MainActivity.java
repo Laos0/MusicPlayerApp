@@ -3,7 +3,6 @@ package com.example.android.musicplayer;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -22,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     Button nextBtn;
     MediaPlayer m1,m2,m3,m4,m5;
     SeekBar positionBar;
+    SeekBar volumeBar;
     ImageView musicImg;
     TextView title;
     TextView currentTime;
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         songIndex = 0;
 
         // The song list and its implementation
-        songList = new ArrayList<MediaPlayer>();
+        songList = new ArrayList<>();
         m1 = MediaPlayer.create(this, R.raw.bazzi);
         m2 = MediaPlayer.create(this, R.raw.barry);
         m3 = MediaPlayer.create(this, R.raw.bee);
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         for(int i =0; i < songList.size(); i++){
             songList.get(i).setLooping(true);
             songList.get(i).seekTo(0);
-            songList.get(i).setVolume(.05f,.05f);
+            songList.get(i).setVolume(10f, 10f);
         }
 
         // The buttons
@@ -83,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
         musicTitles[3] = "Carolina Liar - Show me What I'm Looking For";
         musicTitles[4] = "Scott McKenzie - San Francisco";
 
+        // The total time of the current song
+        totalTime = songList.get(songIndex).getDuration();
 
         // Play the current song
         playBtn.setOnClickListener(new View.OnClickListener() {
@@ -108,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
                     changeImg(songIndex);
                     changeTitle(songIndex);
                     if(!songList.get(songIndex).isPlaying()){
+                        songList.get(songIndex).seekTo(0); // sets audio position to 0
                         songList.get(songIndex).start();
                     }
                 }
@@ -118,21 +121,116 @@ public class MainActivity extends AppCompatActivity {
         nextBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(songList.get(songIndex) != songList.get(4)){
-                    songList.get(songIndex).pause();// // pause the current song, need to find one that resets the audio not pause
+                    songList.get(songIndex).pause();
                     songIndex++;
                     playBtn.setBackgroundResource(R.drawable.pausebtn);
                     changeImg(songIndex);
                     changeTitle(songIndex);
                     if(!songList.get(songIndex).isPlaying()){
+                        songList.get(songIndex).seekTo(0); // sets audio position to 0
                         songList.get(songIndex).start();
                     }
                 }
             }
         });
+
+        // set volume of current song
+        volumeBar = findViewById(R.id.volumeBar);
+        volumeBar.setOnSeekBarChangeListener(
+                new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        float volumeNum = progress / 100f;
+                        songList.get(songIndex).setVolume(volumeNum, volumeNum);
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+
+                    }
+                }
+        );
+
+        // set position of current song
+        positionBar = findViewById(R.id.musicDuration);
+        positionBar.setMax(totalTime);
+        positionBar.setOnSeekBarChangeListener(
+                new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        if (fromUser) {
+                            songList.get(songIndex).seekTo(progress);
+                            positionBar.setProgress(progress);
+                        }
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+
+                    }
+                }
+        );
+
+        // thread (updated positionBar & timeLabel)
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (songList.get(songIndex) != null) {
+                    try {
+                        Message msg = new Message();
+                        msg.what = songList.get(songIndex).getCurrentPosition();
+                        handler.sendMessage(msg);
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e)
+                    {
+                        //empty
+                    }
+                }
+            }
+        }).start();
+
     }
 
-    // my Methods/functions
+    // ignore static for now
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            int currentPosition = msg.what;
+            // Update positionBar.
+            positionBar.setProgress(currentPosition);
 
+            // Update Labels.
+            String elapsedTime = createTimeLabel(currentPosition);
+            currentTime.setText(elapsedTime);
+
+            String remainingTime = createTimeLabel(totalTime-currentPosition);
+            remainTime.setText("- " + remainingTime);
+        }
+    };
+
+    public String createTimeLabel(int time) {
+        String timeLabel;
+        int min = time / 1000 / 60;
+        int sec = time / 1000 % 60;
+
+        timeLabel = min + ":";
+        if (sec < 10) timeLabel += "0";
+        timeLabel += sec;
+
+        return timeLabel;
+    }
+
+    // Sonny's custom methods/functions to change the current song title/image
     public void changeImg(int num){
         if(songList.get(num) == songList.get(0)){
             title.setText(musicTitles[0]);
@@ -160,7 +258,4 @@ public class MainActivity extends AppCompatActivity {
             musicImg.setBackgroundResource(R.drawable.san);
         }
     }
-
-
-
 }
