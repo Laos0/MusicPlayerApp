@@ -236,6 +236,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    // time label calculations
     public String createTimeLabel(int time) {
         String timeLabel;
         int min = time / 1000 / 60;
@@ -248,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
         return timeLabel;
     }
 
-    // Sonny's custom methods/functions to change the current song title/image
+    // custom methods/functions to change the current song title/image
     public void changeImg(int num){
         if(songList.get(num) == songList.get(0)){
             title.setText(musicTitles[0]);

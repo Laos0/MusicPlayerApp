@@ -96,6 +96,7 @@
         android:layout_marginTop="40dp"
         android:gravity="center">
         <ImageView
+            android:contentDescription="Represents the volume at minimum"
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:src="@drawable/soundlow"/>
@@ -106,6 +107,7 @@
             android:progress="50"
             android:max="100"/>
         <ImageView
+            android:contentDescription="Represents the volume at maximum"
             android:layout_width="26dp"
             android:layout_height="26dp"
             android:src="@drawable/soundhigh"/>
