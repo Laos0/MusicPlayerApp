@@ -24,12 +24,16 @@ public class MainActivity extends AppCompatActivity {
     SeekBar volumeBar;
     ImageView musicImg;
     TextView title;
-    TextView currentTime;
-    TextView remainTime;
+    TextView currentTime; // For the SeekBar
+    TextView remainTime; // For the SeekBar
+    TextView numOfSongs;
 
 
-    int songIndex;
-    int totalTime;
+
+    int songIndex; // the index of the songlist
+    int totalTime; // For the SeekBar
+    int currentNumOfSongs; // For the text view called numOfSongs
+    int totalSongs; // For the text view called numOfSongs
     String[] musicTitles = new String[5];
 
     ArrayList<MediaPlayer> songList;
@@ -75,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         title = findViewById((R.id.musicTitle));
         currentTime = findViewById(R.id.curTime);
         remainTime = findViewById(R.id.remTime);
+        numOfSongs = findViewById(R.id.numberOfSongs);
 
         // Music Titles
         musicTitles[0] = "Bazzi feat. Camila Cabello - Beautiful";
@@ -85,6 +90,11 @@ public class MainActivity extends AppCompatActivity {
 
         // The total time of the current song
         totalTime = songList.get(songIndex).getDuration();
+
+        // Setting up how many songs is currently being used
+        currentNumOfSongs = 1;
+        totalSongs = songList.size();
+        numOfSongs.setText(currentNumOfSongs + " / " + totalSongs);
 
         // Play the current song
         playBtn.setOnClickListener(new View.OnClickListener() {
@@ -105,6 +115,10 @@ public class MainActivity extends AppCompatActivity {
 
                 if(songList.get(songIndex) != songList.get(0)){
                     songList.get(songIndex).pause(); // pause the current song, need to find one that resets the audio not pause
+                    if(currentNumOfSongs >= 1){
+                        currentNumOfSongs--;
+                    }
+                    numOfSongs.setText(currentNumOfSongs + " / " + totalSongs);
                     songIndex--;
                     playBtn.setBackgroundResource(R.drawable.pausebtn);
                     changeImg(songIndex);
@@ -121,7 +135,11 @@ public class MainActivity extends AppCompatActivity {
         nextBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(songList.get(songIndex) != songList.get(4)){
-                    songList.get(songIndex).pause();
+                    songList.get(songIndex).pause();// // pause the current song, need to find one that resets the audio not pause
+                    if(currentNumOfSongs <= songList.size()){
+                        currentNumOfSongs++;
+                    }
+                    numOfSongs.setText(currentNumOfSongs + " / " + totalSongs);
                     songIndex++;
                     playBtn.setBackgroundResource(R.drawable.pausebtn);
                     changeImg(songIndex);

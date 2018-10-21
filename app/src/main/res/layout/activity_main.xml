@@ -79,6 +79,15 @@
         android:layout_marginTop="30dp"
         android:text="Bazzi feat. Camila Cabello - Beautiful"
         />
+    <TextView
+        android:id="@+id/numberOfSongs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="30dp"
+        android:textSize="20sp"
+        android:text="4/11"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
