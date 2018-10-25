@@ -11,6 +11,7 @@
 
     <ImageView
         android:id="@+id/musicImage"
+        android:contentDescription="Song image"
         android:layout_width="400dp"
         android:layout_height="400dp"
         android:background="@drawable/bazzi"
@@ -31,6 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0:11"
+            android:layout_marginStart="100dp"
             android:layout_marginLeft="100dp"
             />
         <TextView
@@ -38,6 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="-1:49"
+            android:layout_marginStart="350dp"
             android:layout_marginLeft="350dp"
             />
     </LinearLayout>
@@ -53,6 +56,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/backbtn"
+            style="?android:attr/borderlessButtonStyle"
             />
         <Button
             android:id="@+id/playBtn"
@@ -61,12 +65,14 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:background="@drawable/playbtn"
+            style="?android:attr/borderlessButtonStyle"
             />
         <Button
             android:id="@+id/nextBtn"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/nextbtn"
+            style="?android:attr/borderlessButtonStyle"
             />
     </LinearLayout>
 

@@ -28,8 +28,6 @@ public class MainActivity extends AppCompatActivity {
     TextView remainTime; // For the SeekBar
     TextView numOfSongs;
 
-
-
     int songIndex; // the index of the songlist
     int totalTime; // For the SeekBar
     int currentNumOfSongs; // For the text view called numOfSongs
