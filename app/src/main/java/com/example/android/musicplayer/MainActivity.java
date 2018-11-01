@@ -94,10 +94,10 @@ public class MainActivity extends ListActivity {
         if (null != cursor) {
             cursor.moveToFirst();
 
-            // Use the playlist.xml to store information about the local media files
+            // Setup cursor adapter using the cursor
             mediaAdapter = new MediaCursorAdapter(this, R.layout.playlist, cursor);
 
-            // Create a list with the media files' information
+            // Attach cursor adapter to the ListView
             setListAdapter(mediaAdapter);
 
             // Set button click listeners to the media player and seekbar
@@ -230,18 +230,23 @@ public class MainActivity extends ListActivity {
                     new int[]{R.id.displayname, R.id.title, R.id.duration});
         }
 
+        // The bindView method is used to bind all data to a given view
+        // such as setting the text on a TextView.
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
+            // Find fields to populate in inflated template
             TextView title = view.findViewById(R.id.title);
             TextView name = view.findViewById(R.id.displayname);
             TextView duration = view.findViewById(R.id.duration);
 
+            // Extract properties from cursor
             name.setText(cursor.getString(
                     cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME)));
 
             title.setText(cursor.getString(
                     cursor.getColumnIndex(MediaStore.MediaColumns.TITLE)));
 
+            // Populate fields with extracted properties
             long durationInMs = Long.parseLong(cursor.getString(
                     cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DURATION)));
 
@@ -254,6 +259,7 @@ public class MainActivity extends ListActivity {
             view.setTag(cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA)));
         }
 
+        // The newView method is used to inflate a new view and return it.
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
             LayoutInflater inflater = LayoutInflater.from(context);
@@ -303,7 +309,7 @@ public class MainActivity extends ListActivity {
                     }
                     else
                     {
-                        // do nothing
+                        // do nothing if the music player is paused
                     }
 
                     break;
@@ -322,7 +328,7 @@ public class MainActivity extends ListActivity {
                     }
                     else
                     {
-                        // do nothing
+                        // do nothing if the music player is paused
                     }
 
                     break;
